@@ -1,0 +1,26 @@
+{
+    "name": "faiz/app",
+    "authors": [
+        {
+            "name": "Faiz09",
+            "email": "faizk2413@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "HCM\\": "app/core/"
+        }
+    },
+    "require": {
+        "cheprasov/php-redis-client": "^1.8"
+    },
+    "scripts": {
+        "docker-build": [
+            "docker build -t hello-chef/hello-chef-api --target app .",
+            "docker build -t hello-chef/hello-chef-api-web --target web ."
+        ],
+        "docker-seed": [
+            "docker exec hello-chef-api_fpm_1 /bin/bash -c \"php artisan migrate:fresh && php artisan db:seed\""
+        ]
+    }
+}

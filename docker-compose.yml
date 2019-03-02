@@ -1,0 +1,81 @@
+version: "3"
+
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: root
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+
+  fpm:
+    image: hello-chef/hello-chef-api:latest
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./:/usr/share/nginx/html:ro
+    env_file:
+      - ./.env.development
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - db
+    ports:
+      - "8889:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root
+
+  redis:
+    image: redis
+
+  redis-commander:
+    image: rediscommander/redis-commander
+    depends_on:
+      - redis
+    ports:
+      - "8890:8081"
+    environment:
+      REDIS_HOSTS: default:redis:6379:0,cache:redis:6379:1
+
+#  scheduler:
+#    image: hello-chef/hello-chef-api:latest
+#    depends_on:
+#      - db
+#      - redis
+#    volumes:
+#      - ./:/usr/share/nginx/html:ro
+#    env_file:
+#      - ./.env.development
+#      - ./.env.development.local
+#    command: ["sh", "-c", "env >> /etc/environment && crontab ./crontab && cron -f"]
+
+  web:
+    image: hello-chef/hello-chef-api-web:latest
+    depends_on:
+      - fpm
+    ports:
+      - "8888:80"
+    volumes:
+      - ./public:/usr/share/nginx/html/public:ro
+
+#  worker:
+#    image: hello-chef/hello-chef-api:latest
+#    depends_on:
+#      - db
+#      - redis
+#    volumes:
+#      - ./:/usr/share/nginx/html:ro
+#    env_file:
+#      - ./.env.development
+#      - ./.env.development.local
+#    command: ["php", "artisan", "queue:work", "--queue=analytics,crm,emails,payments,puppeteer,sms", "--sleep=3", "--tries=3"]
+
+volumes:
+  data:
