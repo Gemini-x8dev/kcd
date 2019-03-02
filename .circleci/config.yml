@@ -1,0 +1,6 @@
+version: 2
+jobs:
+  build:
+    docker:
+    # Specify the version you desire here
+    - image: faiz09/helloworldk8s
