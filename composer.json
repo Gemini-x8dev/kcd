@@ -16,11 +16,8 @@
     },
     "scripts": {
         "docker-build": [
-            "docker build -t hello-chef/hello-chef-api --target app .",
-            "docker build -t hello-chef/hello-chef-api-web --target web ."
-        ],
-        "docker-seed": [
-            "docker exec hello-chef-api_fpm_1 /bin/bash -c \"php artisan migrate:fresh && php artisan db:seed\""
+            "docker build -t faiz09/helloworldk8s --target app .",
+            "docker build -t faiz09/helloworldk8s --target web ."
         ]
     }
 }
